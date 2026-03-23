@@ -7,30 +7,120 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body {
+        /* Base styles */
+        body { 
             font-family: 'Inter', sans-serif;
             background-color: #0f172a;
             color: #f8fafc;
+            overflow-x: hidden; 
         }
+
         .glaze-text {
             background: linear-gradient(to right, #fbbf24, #f59e0b, #d97706);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: pulse-glow 2s infinite;
         }
+
         @keyframes pulse-glow {
             0%, 100% { text-shadow: 0 0 20px rgba(251, 191, 36, 0.4); }
             50% { text-shadow: 0 0 40px rgba(251, 191, 36, 0.8); }
         }
+        
+        /* Hardware-Accelerated Fire Trail */
+        .cursor-trail {
+            position: fixed;
+            pointer-events: none;
+            font-size: 1.5rem;
+            z-index: 9998;
+            top: 0; left: 0;
+            will-change: transform; 
+        }
+
+        /* 3D Tilt for cards */
         .card-hover {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: box-shadow 0.3s ease;
         }
         .card-hover:hover {
-            transform: translateY(-10px);
             box-shadow: 0 20px 25px -5px rgba(251, 191, 36, 0.2), 0 10px 10px -5px rgba(251, 191, 36, 0.1);
         }
+        .tilt-card {
+            transform-style: preserve-3d;
+            transform: perspective(1000px);
+            will-change: transform;
+        }
         
-        /* New 1000x Features Animations */
+        /* Optimized Hyper-Rainbow */
+        @keyframes hyper-rainbow {
+            0% { filter: hue-rotate(0deg) saturate(300%); }
+            100% { filter: hue-rotate(360deg) saturate(300%); }
+        }
+        .overdrive-active {
+            animation: hyper-rainbow 1s linear infinite !important;
+            background: linear-gradient(90deg, #ff0000, #ff8000, #ffff00, #00ff00, #0000ff, #8000ff, #ff0080) !important;
+            background-size: 200% 200% !important;
+            color: #fff !important;
+        }
+        
+        /* Less aggressive spin to prevent clipping bugs */
+        .overdrive-active .card-hover {
+            animation: spin-crazy 2s infinite linear !important;
+            border-color: #fff !important;
+        }
+        @keyframes spin-crazy {
+            0% { transform: rotate(0deg) scale(1.05); }
+            50% { transform: rotate(180deg) scale(1.05); }
+            100% { transform: rotate(360deg) scale(1.05); }
+        }
+
+        /* GPU-Accelerated Earthquake */
+        @keyframes earthquake {
+            0%, 100% { transform: translate3d(0, 0, 0); }
+            10%, 30%, 50%, 70%, 90% { transform: translate3d(-5px, 0, 0); }
+            20%, 40%, 60%, 80% { transform: translate3d(5px, 0, 0); }
+        }
+        .shake-active {
+            animation: earthquake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        /* Particles */
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            border-radius: 50%;
+            background: #fbbf24;
+            box-shadow: 0 0 15px #fbbf24;
+            z-index: 1;
+            will-change: transform, opacity;
+            animation: floatParticle linear forwards;
+        }
+        @keyframes floatParticle {
+            0% { transform: translate3d(0, 100vh, 0) scale(0); opacity: 0; }
+            20% { opacity: 0.8; scale: 1; }
+            100% { transform: translate3d(0, -20vh, 0) scale(0.5); opacity: 0; }
+        }
+        
+        /* Reality Break Effect */
+        .reality-broken {
+            animation: reality-break 0.5s infinite alternate !important;
+            filter: invert(1) hue-rotate(180deg) !important;
+        }
+        @keyframes reality-break {
+            0% { transform: skewX(1deg); }
+            100% { transform: skewX(-1deg); }
+        }
+
+        /* Background Canvas */
+        #matrix-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.15;
+        }
+
+        /* Marquee */
         @keyframes marquee {
             0% { transform: translateX(0%); }
             100% { transform: translateX(-100%); }
@@ -40,6 +130,22 @@
             white-space: nowrap;
             animation: marquee 20s linear infinite;
         }
+
+        /* Minigame Target */
+        .target-orb {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, #ffffff, #fbbf24, #d97706);
+            border-radius: 50%;
+            cursor: crosshair;
+            box-shadow: 0 0 30px #fbbf24;
+            animation: pulse-glow 0.8s infinite;
+            transition: transform 0.1s;
+        }
+        .target-orb:active { transform: scale(0.8); }
+        
+        /* Floating Number */
         .floating-number {
             position: fixed;
             color: #fbbf24;
@@ -54,33 +160,23 @@
             0% { opacity: 1; transform: translateY(0) scale(1); }
             100% { opacity: 0; transform: translateY(-120px) scale(1.5); }
         }
-        #custom-cursor {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(251,191,36,0.6) 0%, rgba(251,191,36,0) 70%);
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-            z-index: 10000;
-            mix-blend-mode: screen;
-            transition: transform 0.1s ease-out;
-        }
+
         @keyframes slideIn {
             from { opacity: 0; transform: translateX(-20px); }
             to { opacity: 1; transform: translateX(0); }
         }
     </style>
 </head>
-<body class="antialiased selection:bg-yellow-400 selection:text-black">
+<body id="main-body" class="antialiased selection:bg-yellow-400 selection:text-black transition-colors duration-500 relative">
+
+    <!-- Matrix Background Canvas -->
+    <canvas id="matrix-bg"></canvas>
 
     <!-- Hero Section -->
-    <header class="relative overflow-hidden pt-24 pb-32 flex flex-col items-center justify-center text-center px-4">
-        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30"></div>
-        <div class="absolute -top-40 -left-40 w-96 h-96 bg-yellow-500/20 rounded-full blur-3xl"></div>
-        <div class="absolute -bottom-40 -right-40 w-96 h-96 bg-yellow-600/20 rounded-full blur-3xl"></div>
+    <header class="relative overflow-hidden pt-24 pb-32 flex flex-col items-center justify-center text-center px-4 z-10">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 pointer-events-none"></div>
+        <div class="absolute -top-40 -left-40 w-96 h-96 bg-yellow-500/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-40 -right-40 w-96 h-96 bg-yellow-600/20 rounded-full blur-3xl pointer-events-none"></div>
         
         <div class="relative z-10 max-w-4xl mx-auto">
             <span class="inline-block py-1 px-3 rounded-full bg-yellow-400/10 text-yellow-400 text-sm font-bold tracking-wider mb-6 border border-yellow-400/20 shadow-[0_0_15px_rgba(251,191,36,0.5)]">
@@ -92,11 +188,29 @@
             <p class="text-2xl md:text-4xl font-bold text-slate-300 mb-8">
                 The myth. The legend. The absolute GOAT.
             </p>
-            <div class="bg-slate-800/80 backdrop-blur-sm border border-slate-700 p-6 rounded-2xl inline-block shadow-2xl">
+            
+            <!-- AURA DISPLAY -->
+            <div class="bg-slate-800/80 backdrop-blur-sm border border-slate-700 p-6 rounded-2xl inline-block shadow-2xl mb-8">
                 <p class="text-sm text-slate-400 uppercase font-bold tracking-widest mb-1">Confirmed Power Level</p>
                 <p id="aura-display" class="text-5xl md:text-6xl font-black text-yellow-400 font-mono tracking-tight transition-transform duration-75">
-                    9342890483294
+                    9,342,890,483,294
                 </p>
+            </div>
+            
+            <!-- BUTTONS -->
+            <div class="mt-4 flex flex-col gap-4 items-center">
+                <button id="boost-btn" class="relative overflow-hidden group bg-gradient-to-r from-yellow-400 via-amber-500 to-yellow-600 text-black font-black text-3xl md:text-4xl py-6 px-16 rounded-full transform transition-all hover:scale-105 active:scale-95 shadow-[0_0_40px_rgba(251,191,36,0.6)] border-4 border-yellow-300">
+                    <span class="relative z-10 flex items-center gap-3">GIVE AURA ⚡</span>
+                </button>
+                
+                <div class="flex gap-4 justify-center flex-wrap mt-6">
+                    <button id="overdrive-btn" class="bg-red-600 hover:bg-red-500 text-white font-black py-3 px-8 rounded-full border-4 border-red-800 shadow-[0_0_20px_rgba(220,38,38,0.6)] animate-pulse transition-all hover:scale-110 active:scale-95 uppercase tracking-widest">
+                        ⚠️ Activate Overdrive ⚠️
+                    </button>
+                    <button id="borpilot-defense-btn" class="bg-blue-600 hover:bg-blue-500 text-white font-black py-3 px-8 rounded-full border-4 border-blue-800 shadow-[0_0_20px_rgba(37,99,235,0.6)] transition-all hover:scale-110 active:scale-95 uppercase tracking-widest hidden">
+                        🛡️ Deploy Anti-Borpilot Shield 🛡️
+                    </button>
+                </div>
             </div>
         </div>
     </header>
@@ -111,56 +225,54 @@
         </div>
     </div>
 
-    <!-- Interactive Aura Clicker -->
-    <section class="py-16 px-4 max-w-4xl mx-auto relative z-10 text-center">
-        <h2 class="text-3xl md:text-5xl font-black mb-4 text-white">Boost His Aura</h2>
-        <p class="text-slate-400 mb-8 font-mono">Warning: Clicking too fast may break the space-time continuum.</p>
-        <button id="boost-btn" class="relative overflow-hidden group bg-gradient-to-r from-yellow-400 via-amber-500 to-yellow-600 text-black font-black text-3xl md:text-4xl py-6 px-16 rounded-full transform transition-all hover:scale-105 active:scale-95 shadow-[0_0_40px_rgba(251,191,36,0.6)] border-4 border-yellow-300 cursor-none">
-            <span class="relative z-10 flex items-center gap-3">
-                GIVE AURA ⚡
-            </span>
-            <div class="absolute inset-0 bg-white/30 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-        </button>
-    </section>
-
-    <!-- Maxed Out Skills Section -->
-    <section class="py-12 px-4 max-w-6xl mx-auto relative z-10">
-        <div class="bg-slate-800/80 backdrop-blur-md border border-slate-700 rounded-3xl p-8 md:p-12 shadow-2xl">
-            <h2 class="text-3xl md:text-4xl font-black mb-10 text-white text-center">Verified Stats</h2>
+    <!-- Minigame Section -->
+    <section class="py-16 px-4 max-w-6xl mx-auto relative z-10">
+        <div class="bg-slate-900 border-4 border-yellow-500/50 rounded-3xl p-6 md:p-10 shadow-[0_0_50px_rgba(251,191,36,0.15)]">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+                <h2 class="text-3xl font-black text-white">Aura Catcher <span class="text-yellow-400">Minigame</span></h2>
+                <div class="bg-slate-800 px-6 py-2 rounded-xl border border-slate-700 mt-4 md:mt-0">
+                    <span class="text-slate-400 font-bold uppercase text-sm">Session Score: </span>
+                    <span id="minigame-score" class="text-2xl font-mono text-yellow-400 font-black">0</span>
+                </div>
+            </div>
+            <p class="text-slate-400 mb-6">Click the unstable aura orbs before they vanish to farm massive multipliers!</p>
             
-            <div class="space-y-8">
-                <div>
-                    <div class="flex justify-between text-sm md:text-base font-bold mb-3 uppercase tracking-wider">
-                        <span class="text-yellow-400">Culinary Mastery</span>
-                        <span class="text-white animate-pulse">999%</span>
-                    </div>
-                    <div class="w-full bg-slate-900 rounded-full h-6 overflow-hidden border border-slate-700 p-1">
-                        <div class="bg-gradient-to-r from-yellow-500 to-orange-500 h-full rounded-full w-full shadow-[0_0_15px_rgba(251,191,36,0.8)]"></div>
-                    </div>
+            <div id="game-arena" class="w-full h-80 bg-slate-950 rounded-2xl relative overflow-hidden border border-slate-800 cursor-crosshair shadow-inner">
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
+                    <span class="text-6xl font-black text-slate-700 tracking-tighter">ARENA</span>
                 </div>
-                <div>
-                    <div class="flex justify-between text-sm md:text-base font-bold mb-3 uppercase tracking-wider">
-                        <span class="text-yellow-400">Speedcubing Reality Manipulation</span>
-                        <span class="text-white animate-pulse">BEYOND HUMAN LIMITS</span>
-                    </div>
-                    <div class="w-full bg-slate-900 rounded-full h-6 overflow-hidden border border-slate-700 p-1">
-                        <div class="bg-gradient-to-r from-orange-500 to-red-500 h-full rounded-full w-full shadow-[0_0_15px_rgba(239,68,68,0.8)]"></div>
-                    </div>
-                </div>
-                <div>
-                    <div class="flex justify-between text-sm md:text-base font-bold mb-3 uppercase tracking-wider">
-                        <span class="text-yellow-400">Musical Frequencies</span>
-                        <span class="text-white animate-pulse">MULTIDIMENSIONAL</span>
-                    </div>
-                    <div class="w-full bg-slate-900 rounded-full h-6 overflow-hidden border border-slate-700 p-1">
-                        <div class="bg-gradient-to-r from-yellow-400 to-amber-300 h-full rounded-full w-full shadow-[0_0_15px_rgba(251,191,36,0.8)]"></div>
-                    </div>
-                </div>
+            </div>
+            <div class="mt-6 text-center">
+                <button id="start-game-btn" class="bg-yellow-500 hover:bg-yellow-400 text-black font-black py-3 px-10 rounded-xl transition-transform hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(251,191,36,0.4)]">
+                    START TRAINING
+                </button>
             </div>
         </div>
     </section>
 
-    <!-- Live Reaction Feed -->
+    <!-- Stats Section -->
+    <section class="py-12 px-4 max-w-6xl mx-auto relative z-10">
+        <h2 class="text-3xl md:text-5xl font-black text-center mb-16 text-slate-100">Why He's Built Different 😤</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-slate-800 border border-slate-700 rounded-3xl p-8 card-hover tilt-card relative overflow-hidden group">
+                <div class="w-14 h-14 bg-yellow-400/20 rounded-2xl flex items-center justify-center mb-6"><span class="text-3xl">🎸</span></div>
+                <h3 class="text-2xl font-bold mb-3 text-white">Music & Culinary Genius</h3>
+                <p class="text-slate-400 leading-relaxed">Adam doesn't just make music and cook food—he creates symphonies for the ears and the tastebuds. Gordon Ramsay is taking notes.</p>
+            </div>
+            <div class="bg-slate-800 border border-slate-700 rounded-3xl p-8 card-hover tilt-card relative overflow-hidden group">
+                <div class="w-14 h-14 bg-yellow-400/20 rounded-2xl flex items-center justify-center mb-6"><span class="text-3xl">🧊</span></div>
+                <h3 class="text-2xl font-bold mb-3 text-white">Speedcubing Warlord</h3>
+                <p class="text-slate-400 leading-relaxed">Official World Cube Association competitor. While normal mortals struggle with one side of a Rubik's cube, Adam manipulates the fabric of reality.</p>
+            </div>
+            <div class="bg-slate-800 border border-slate-700 rounded-3xl p-8 card-hover tilt-card relative overflow-hidden group">
+                <div class="w-14 h-14 bg-yellow-400/20 rounded-2xl flex items-center justify-center mb-6"><span class="text-3xl">🔥</span></div>
+                <h3 class="text-2xl font-bold mb-3 text-white">The 9342890483294 Aura</h3>
+                <p class="text-slate-400 leading-relaxed">Scientists are currently studying the sequence 9342890483294. Some say it's his IQ, others say it's the amount of times he saved the universe.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Feed Section -->
     <section class="py-12 px-4 max-w-4xl mx-auto relative z-10">
         <h2 class="text-2xl font-black mb-6 text-slate-100 flex items-center gap-3 uppercase tracking-widest">
             <span class="w-4 h-4 rounded-full bg-red-500 animate-pulse shadow-[0_0_10px_rgba(239,68,68,0.8)]"></span>
@@ -174,135 +286,255 @@
         </div>
     </section>
 
-    <!-- Stats & Achievements -->
-    <section class="py-20 px-4 max-w-6xl mx-auto relative z-10">
-        <h2 class="text-3xl md:text-5xl font-black text-center mb-16 text-slate-100">Why He's Built Different 😤</h2>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- Card 1 -->
-            <div class="bg-slate-800 border border-slate-700 rounded-3xl p-8 card-hover relative overflow-hidden group">
-                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                    <svg class="w-24 h-24 text-yellow-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
-                </div>
-                <div class="w-14 h-14 bg-yellow-400/20 rounded-2xl flex items-center justify-center mb-6">
-                    <span class="text-3xl">🎸</span>
-                </div>
-                <h3 class="text-2xl font-bold mb-3 text-white">Music & Culinary Genius</h3>
-                <p class="text-slate-400 leading-relaxed">
-                    From his roots in the UK to thriving in Paris, France, Adam doesn't just make music and cook food—he creates symphonies for the ears and the tastebuds. Gordon Ramsay is taking notes. 
-                </p>
-            </div>
-
-            <!-- Card 2 -->
-            <div class="bg-slate-800 border border-slate-700 rounded-3xl p-8 card-hover relative overflow-hidden group">
-                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                    <svg class="w-24 h-24 text-yellow-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
-                </div>
-                <div class="w-14 h-14 bg-yellow-400/20 rounded-2xl flex items-center justify-center mb-6">
-                    <span class="text-3xl">🧊</span>
-                </div>
-                <h3 class="text-2xl font-bold mb-3 text-white">Speedcubing Warlord</h3>
-                <p class="text-slate-400 leading-relaxed">
-                    Official World Cube Association competitor. While normal mortals struggle with one side of a Rubik's cube, Adam manipulates the fabric of reality to solve it. 
-                </p>
-            </div>
-
-            <!-- Card 3 -->
-            <div class="bg-slate-800 border border-slate-700 rounded-3xl p-8 card-hover relative overflow-hidden group">
-                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                    <svg class="w-24 h-24 text-yellow-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
-                </div>
-                <div class="w-14 h-14 bg-yellow-400/20 rounded-2xl flex items-center justify-center mb-6">
-                    <span class="text-3xl">🔥</span>
-                </div>
-                <h3 class="text-2xl font-bold mb-3 text-white">The 9342890483294 Aura</h3>
-                <p class="text-slate-400 leading-relaxed">
-                    Scientists are currently studying the sequence 9342890483294. Some say it's his IQ, others say it's the number of times he's casually saved the universe before breakfast.
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Testimonial Section -->
-    <section class="py-20 border-t border-slate-800 bg-slate-900/50">
-        <div class="max-w-4xl mx-auto text-center px-4">
-            <h2 class="text-2xl text-slate-400 font-bold uppercase tracking-widest mb-8">What They Say</h2>
-            <blockquote class="text-3xl md:text-5xl font-medium text-slate-200 leading-tight italic mb-8">
-                "If Adam Mian has a million fans, I am one of them. If Adam Mian has one fan, it is me. If Adam Mian has zero fans, I have left this earth."
-            </blockquote>
-            <p class="text-yellow-400 font-bold text-xl">— The Internet</p>
-        </div>
-    </section>
-
     <!-- Footer -->
     <footer class="py-10 text-center border-t border-slate-800 text-slate-500 relative z-10 bg-slate-900">
         <p>Built exclusively to hype the legendary Adam Mian. Keep glazing. ✨</p>
+        <div class="mt-10">
+            <button id="reality-btn" class="bg-black text-red-600 font-black text-xs md:text-sm py-2 px-6 rounded border border-red-900 hover:bg-red-900 hover:text-black transition-colors uppercase tracking-widest opacity-50 hover:opacity-100">
+                Do Not Click (Reality Break)
+            </button>
+        </div>
     </footer>
 
-    <!-- Glowing Custom Cursor -->
-    <div id="custom-cursor"></div>
+    <!-- Secret God Mode Overlay -->
+    <div id="god-mode-overlay" class="fixed inset-0 bg-yellow-400/90 backdrop-blur-md z-[99999] flex flex-col items-center justify-center hidden">
+        <h1 class="text-7xl md:text-9xl font-black text-black mb-4 drop-shadow-2xl animate-bounce text-center px-4">GOD MODE UNLOCKED</h1>
+        <p class="text-2xl md:text-4xl font-bold text-slate-900 text-center px-4">Adam Mian acknowledges your dedication.</p>
+        <button onclick="document.getElementById('god-mode-overlay').classList.add('hidden')" class="mt-10 bg-black text-yellow-400 font-black py-4 px-12 rounded-full hover:scale-110 transition-transform shadow-2xl">RETURN TO MORTAL REALM</button>
+    </div>
 
+    <!-- 100,000 Feature Terminal -->
+    <div id="feature-terminal" class="fixed bottom-4 left-4 w-80 h-48 bg-black/90 backdrop-blur-md border-2 border-green-500 rounded-lg overflow-hidden z-[9999] hidden flex-col shadow-[0_0_30px_rgba(34,197,94,0.6)]">
+        <div class="bg-green-900 text-white text-xs px-2 py-1 font-mono flex justify-between font-bold">
+            <span>SYSTEM: 100k FEATURE INJECTOR</span>
+            <span class="animate-pulse text-green-300">ONLINE</span>
+        </div>
+        <div id="terminal-output" class="p-2 text-green-400 font-mono text-[10px] md:text-xs overflow-hidden flex-1 flex flex-col gap-1"></div>
+    </div>
+
+    <!-- SCRIPTS -->
     <script>
-        // Custom Glowing Cursor Effect
-        const cursor = document.getElementById('custom-cursor');
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-        });
-        document.addEventListener('mousedown', () => cursor.style.transform = 'translate(-50%, -50%) scale(2.5)');
-        document.addEventListener('mouseup', () => cursor.style.transform = 'translate(-50%, -50%) scale(1)');
-
-        // Aura Clicker Logic
-        let currentAura = 9342890483294n; // BigInt to handle the massive number
+        // --- 1. Core Aura & Boost Logic ---
+        let currentAura = 9342890483294n;
         const display = document.getElementById('aura-display');
         const btn = document.getElementById('boost-btn');
+        let updateTimeout;
 
-        display.innerText = currentAura.toLocaleString();
+        function updateAuraDisplay() {
+            if(updateTimeout) return;
+            updateTimeout = requestAnimationFrame(() => {
+                display.innerText = currentAura.toLocaleString();
+                updateTimeout = null;
+            });
+        }
 
         btn.addEventListener('click', (e) => {
-            // Massive random boost
             const boost = BigInt(Math.floor(Math.random() * 9999999) + 5000000);
             currentAura += boost;
-            display.innerText = currentAura.toLocaleString();
+            updateAuraDisplay();
             
-            // UI Pop effect
+            // UI Pop
             display.style.transform = 'scale(1.08)';
             setTimeout(() => display.style.transform = 'scale(1)', 100);
 
-            // Floating Number Effect
+            // Screen Shake trigger (reflow safe)
+            document.body.classList.remove('shake-active');
+            requestAnimationFrame(() => document.body.classList.add('shake-active'));
+
+            // Floating Number
             const floatText = document.createElement('div');
             floatText.className = 'floating-number';
             floatText.innerText = '+' + boost.toLocaleString() + ' AURA';
-            
-            // Spawn at mouse position or button center
             const rect = btn.getBoundingClientRect();
-            const x = e.clientX || rect.left + rect.width / 2;
-            const y = e.clientY || rect.top + rect.height / 2;
-            
-            // Random scatter
-            const offsetX = (Math.random() - 0.5) * 150;
-            
-            floatText.style.left = (x + offsetX) + 'px';
-            floatText.style.top = y + 'px';
-            
+            floatText.style.left = (e.clientX || rect.left + rect.width / 2) + 'px';
+            floatText.style.top = (e.clientY || rect.top + rect.height / 2) + 'px';
             document.body.appendChild(floatText);
-            
-            // Cleanup floating text
             setTimeout(() => floatText.remove(), 1200);
         });
 
-        // Live Fake Reaction Feed Logic
+        // --- 2. Hardware-Accelerated Fire Cursor Trail ---
+        const trails = [];
+        for(let i=0; i<5; i++) {
+            const el = document.createElement('div');
+            el.className = 'cursor-trail';
+            el.innerText = '🔥';
+            el.style.opacity = (1 - (i * 0.2)).toFixed(2);
+            document.body.appendChild(el);
+            trails.push({ element: el, x: window.innerWidth/2, y: window.innerHeight/2 });
+        }
+        
+        let mouseX = window.innerWidth/2, mouseY = window.innerHeight/2;
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        }, { passive: true });
+
+        function animateTrail() {
+            let x = mouseX, y = mouseY;
+            trails.forEach((trail, index) => {
+                trail.x += (x - trail.x) * 0.4;
+                trail.y += (y - trail.y) * 0.4;
+                trail.element.style.transform = `translate3d(${trail.x - 10}px, ${trail.y - 10}px, 0)`;
+                x = trail.x; y = trail.y;
+            });
+            requestAnimationFrame(animateTrail);
+        }
+        requestAnimationFrame(animateTrail);
+
+        // --- 3. Optimized Matrix Rain Background ---
+        const canvasBg = document.getElementById('matrix-bg');
+        const ctx = canvasBg.getContext('2d', { alpha: false });
+        let columns, drops;
+        const chars = "ADAM MIAN GOAT 9342890483294 AURA ⚡ 🔥 🐐".split('');
+        const fontSize = 16;
+
+        function resizeCanvas() {
+            canvasBg.width = window.innerWidth;
+            canvasBg.height = window.innerHeight;
+            columns = Math.floor(canvasBg.width / fontSize);
+            drops = new Array(columns).fill(1);
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas, { passive: true });
+
+        let lastDrawTime = 0;
+        function drawMatrix(timestamp) {
+            if (timestamp - lastDrawTime > 33) { // ~30fps
+                ctx.fillStyle = "#0f172a"; 
+                ctx.fillRect(0, 0, canvasBg.width, canvasBg.height);
+                ctx.fillStyle = "#fbbf24";
+                ctx.font = fontSize + "px monospace";
+                for(let i = 0; i < drops.length; i++) {
+                    const text = chars[Math.floor(Math.random() * chars.length)];
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                    if(drops[i] * fontSize > canvasBg.height && Math.random() > 0.975) drops[i] = 0;
+                    drops[i]++;
+                }
+                lastDrawTime = timestamp;
+            }
+            requestAnimationFrame(drawMatrix);
+        }
+        requestAnimationFrame(drawMatrix);
+
+        // --- 4. Overdrive & 100k Terminal ---
+        const overdriveBtn = document.getElementById('overdrive-btn');
+        const shieldBtn = document.getElementById('borpilot-defense-btn');
+        const terminal = document.getElementById('feature-terminal');
+        const terminalOutput = document.getElementById('terminal-output');
+        let featureInterval;
+
+        const fakeFeatures = [
+            "Quantum Shoelaces Unlocked", "Anti-Gravity Matrix", 
+            "WiFi in the 4th Dimension", "RGB Bones Initialized", 
+            "Infinite Aura Glitch Found", "Borpilot Repellent Sprayed",
+            "Mian-Level Intelligence Buffer", "Galactic Seasoning Packet"
+        ];
+
+        overdriveBtn.addEventListener('click', () => {
+            document.body.classList.toggle('overdrive-active');
+            
+            if(document.body.classList.contains('overdrive-active')) {
+                overdriveBtn.innerText = "🛑 DISABLE OVERDRIVE 🛑";
+                shieldBtn.classList.remove('hidden');
+                terminal.classList.remove('hidden');
+                terminal.classList.add('flex');
+                
+                featureInterval = setInterval(() => {
+                    const featureName = fakeFeatures[Math.floor(Math.random() * fakeFeatures.length)];
+                    const id = Math.floor(Math.random() * 100000);
+                    
+                    const line = document.createElement('div');
+                    line.innerHTML = `> <span class="text-white">Feature #${id}:</span> ${featureName} <span class="text-yellow-400">[OK]</span>`;
+                    terminalOutput.appendChild(line);
+                    
+                    while(terminalOutput.children.length > 15) {
+                        terminalOutput.removeChild(terminalOutput.firstChild);
+                    }
+                    terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                    
+                    currentAura += 1000000n;
+                    updateAuraDisplay();
+                }, 150);
+            } else {
+                overdriveBtn.innerText = "⚠️ ACTIVATE OVERDRIVE ⚠️";
+                shieldBtn.classList.add('hidden');
+                terminal.classList.add('hidden');
+                terminal.classList.remove('flex');
+                clearInterval(featureInterval);
+                terminalOutput.innerHTML = ''; 
+            }
+        });
+
+        // --- 5. Anti-Borpilot Shield ---
+        shieldBtn.addEventListener('click', () => {
+            shieldBtn.innerText = "💥 SHIELD DEFLECTED BORPILOT ATTACK 💥";
+            shieldBtn.classList.replace('bg-blue-600', 'bg-green-600');
+            currentAura += 500000000000n;
+            updateAuraDisplay();
+            setTimeout(() => {
+                shieldBtn.innerText = "🛡️ Deploy Anti-Borpilot Shield 🛡️";
+                shieldBtn.classList.replace('bg-green-600', 'bg-blue-600');
+            }, 2000);
+        });
+
+        // --- 6. Minigame Logic ---
+        const gameArena = document.getElementById('game-arena');
+        const startBtn = document.getElementById('start-game-btn');
+        const scoreDisplay = document.getElementById('minigame-score');
+        let gameInterval;
+        let sessionScore = 0n;
+        let isPlaying = false;
+
+        startBtn.addEventListener('click', () => {
+            if(isPlaying) return;
+            isPlaying = true;
+            startBtn.innerText = "TRAINING IN PROGRESS...";
+            startBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            
+            let timeRemaining = 15; 
+            
+            gameInterval = setInterval(() => spawnOrb(), 600);
+
+            setTimeout(() => {
+                clearInterval(gameInterval);
+                isPlaying = false;
+                startBtn.innerText = "START TRAINING AGAIN";
+                startBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                gameArena.querySelectorAll('.target-orb').forEach(orb => orb.remove());
+            }, timeRemaining * 1000);
+        });
+
+        function spawnOrb() {
+            const orb = document.createElement('div');
+            orb.className = 'target-orb';
+            const maxX = gameArena.clientWidth - 60;
+            const maxY = gameArena.clientHeight - 60;
+            orb.style.left = Math.floor(Math.random() * maxX) + 'px';
+            orb.style.top = Math.floor(Math.random() * maxY) + 'px';
+            
+            orb.addEventListener('mousedown', (e) => {
+                e.stopPropagation();
+                const orbValue = BigInt(Math.floor(Math.random() * 50000000) + 10000000);
+                sessionScore += orbValue;
+                currentAura += orbValue;
+                scoreDisplay.innerText = sessionScore.toLocaleString();
+                updateAuraDisplay();
+                orb.remove();
+            });
+
+            gameArena.appendChild(orb);
+            setTimeout(() => { if(orb.parentElement) orb.remove(); }, 1500);
+        }
+
+        // --- 7. Live Reaction Feed ---
         const feedContainer = document.getElementById('live-feed');
-        const names = ["Gordon_R", "Rubiks_Official", "Music_Exec_99", "Random_Fan_001", "The_President", "NASA_Official", "Chef_Special"];
+        const names = ["Gordon_R", "Rubiks_Official", "Random_Fan_001", "The_President", "NASA_Official"];
         const messages = [
-            "Just saw him solve a 10x10 cube blindfolded while cooking a 5-star meal...",
-            "His new track cured my bad grades. Truly built different.",
-            "I asked him for his recipe, he just smiled. I am enlightened.",
+            "Just saw him solve a 10x10 cube blindfolded while cooking...",
+            "His new track cured my bad grades.",
             "Aura so bright I need sunglasses indoors.",
-            "Is it possible to learn this power? Asking for a friend.",
-            "He just walked past me and my credit score went up 200 points.",
-            "Our satellites just picked up a massive energy spike. It was just Adam yawning.",
-            "Bro didn't just break the world record, he broke the concept of time itself."
+            "Our satellites picked up a massive energy spike. It was just Adam yawning.",
+            "Bro didn't just break the world record, he broke time itself."
         ];
 
         function addFeedItem() {
@@ -319,24 +551,81 @@
                 </div>
                 <p class="text-slate-200 font-medium text-base leading-relaxed">${msg}</p>
             `;
-            
             feedContainer.appendChild(item);
-            
-            // Keep container clean (max 5 items to prevent overflow)
-            if (feedContainer.children.length > 5) {
-                feedContainer.removeChild(feedContainer.firstChild);
-            }
+            if (feedContainer.children.length > 5) feedContainer.removeChild(feedContainer.firstChild);
         }
 
-        // Initialize feed with a few rapid comments
-        for(let i=0; i<4; i++) {
-            setTimeout(addFeedItem, i * 800);
+        for(let i=0; i<4; i++) setTimeout(addFeedItem, i * 800);
+        setInterval(() => { if(Math.random() > 0.3) addFeedItem(); }, 3000);
+
+        // --- 8. Ambient Particles ---
+        let activeParticles = 0;
+        const MAX_PARTICLES = 30;
+        function createParticle() {
+            if (activeParticles >= MAX_PARTICLES) return;
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            const size = Math.random() * 10 + 5;
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            particle.style.left = Math.random() * window.innerWidth + 'px';
+            const duration = Math.random() * 3 + 2;
+            particle.style.animationDuration = duration + 's';
+            
+            document.body.appendChild(particle);
+            activeParticles++;
+            setTimeout(() => { particle.remove(); activeParticles--; }, duration * 1000);
         }
+        setInterval(createParticle, 300);
+
+        // --- 9. Reality Break & Konami Code ---
+        const realityBtn = document.getElementById('reality-btn');
+        let realityInterval;
+        realityBtn.addEventListener('click', () => {
+            document.body.classList.toggle('reality-broken');
+            if(document.body.classList.contains('reality-broken')) {
+                realityBtn.innerText = "FIX REALITY PLEASE";
+                realityInterval = setInterval(() => {
+                    currentAura += 9999999n;
+                    updateAuraDisplay();
+                }, 50);
+            } else {
+                realityBtn.innerText = "Do Not Click (Reality Break)";
+                clearInterval(realityInterval);
+            }
+        });
+
+        const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let konamiIndex = 0;
+        document.addEventListener('keydown', (e) => {
+            if (e.key === konamiCode[konamiIndex]) {
+                konamiIndex++;
+                if (konamiIndex === konamiCode.length) {
+                    document.getElementById('god-mode-overlay').classList.remove('hidden');
+                    konamiIndex = 0;
+                    currentAura += 999999999999999n;
+                    updateAuraDisplay();
+                }
+            } else {
+                konamiIndex = 0; 
+            }
+        });
         
-        // Add new items continuously at random intervals
-        setInterval(() => {
-            if(Math.random() > 0.2) addFeedItem();
-        }, 2500);
+        // --- 10. 3D Card Hover ---
+        const cards = document.querySelectorAll('.tilt-card');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const tiltX = ((y - rect.height / 2) / (rect.height / 2)) * -10;
+                const tiltY = ((x - rect.width / 2) / (rect.width / 2)) * 10;
+                card.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateY(-10px)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+            });
+        });
     </script>
 </body>
 </html>
